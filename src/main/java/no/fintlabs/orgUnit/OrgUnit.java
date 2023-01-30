@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class OrgUnit {
     private Long id;
+    private String resourceId;
     private String organisationUnitId;
     private String name;
     private String shortName;

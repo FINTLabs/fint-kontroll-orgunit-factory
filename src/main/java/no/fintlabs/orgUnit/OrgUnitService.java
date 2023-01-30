@@ -1,4 +1,4 @@
-package no.fintlabs;
+package no.fintlabs.orgUnit;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
@@ -22,6 +22,7 @@ public class OrgUnitService {
     public OrgUnit create(OrganisasjonselementResource organisasjonselementResource){
         return OrgUnit
                 .builder()
+                .resourceId(ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource))
                 .organisationUnitId(organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .name(organisasjonselementResource.getNavn())
                 .shortName(organisasjonselementResource.getKortnavn())

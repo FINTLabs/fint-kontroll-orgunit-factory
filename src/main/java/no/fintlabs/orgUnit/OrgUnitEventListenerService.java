@@ -1,4 +1,4 @@
-package no.fintlabs;
+package no.fintlabs.orgUnit;
 
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fintlabs.cache.FintCache;
