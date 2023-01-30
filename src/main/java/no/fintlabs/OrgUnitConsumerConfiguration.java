@@ -1,32 +1,47 @@
 package no.fintlabs;
 
+import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
+import no.fintlabs.cache.FintCache;
 import no.fintlabs.kafka.entity.EntityConsumerFactoryService;
 import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import no.fintlabs.links.ResourceLinkUtil;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.kafka.listener.CommonLoggingErrorHandler;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 
-import java.util.function.Consumer;
-
 @Configuration
+@DependsOn("orgUnitEventListenerService")
 public class OrgUnitConsumerConfiguration {
+    private final EntityConsumerFactoryService entityConsumerFactoryService;
 
-    public ConcurrentMessageListenerContainer<String, OrganisasjonselementResource> organisasjonselementResourceConsumer(
-            OrgUnitService orgUnitService,
-            EntityConsumerFactoryService entityConsumerFactoryService
-    ){
-        EntityTopicNameParameters entityTopicNameParameters = EntityTopicNameParameters
-                .builder()
-                .resource("administrasjon.organisasjon.organisasjonselement")
-                .build();
-        ConcurrentMessageListenerContainer consumer = entityConsumerFactoryService.createFactory(
-                OrganisasjonselementResource.class,
-                (ConsumerRecord<String, OrganisasjonselementResource> consumerRecord)
-                -> orgUnitService.process(consumerRecord.value()))
-                .createContainer(entityTopicNameParameters);
-
-        return consumer;
+    public OrgUnitConsumerConfiguration(EntityConsumerFactoryService entityConsumerFactoryService) {
+        this.entityConsumerFactoryService = entityConsumerFactoryService;
     }
 
+    @Bean
+    ConcurrentMessageListenerContainer<String,OrganisasjonselementResource> organisasjonselementResourceConsumer(
+            FintCache<String,OrganisasjonselementResource> organisasjonselementResourceCache){
+        return createCacheConsumer(
+                "administrasjon.organisasjon.organisasjonselement",
+                OrganisasjonselementResource.class,
+                organisasjonselementResourceCache);
+    }
+
+    private <T extends FintLinks> ConcurrentMessageListenerContainer<String, T> createCacheConsumer(
+            String resourceReference,
+            Class<T> resourceClass,
+            FintCache<String, T> cache
+    ) {
+        return entityConsumerFactoryService.createFactory(
+                resourceClass,
+                consumerRecord -> cache.put(
+                        ResourceLinkUtil.getSelfLinks(consumerRecord.value()),
+                        consumerRecord.value()
+                ),
+                new CommonLoggingErrorHandler()
+        ).createContainer(EntityTopicNameParameters.builder().resource(resourceReference).build());
+    }
 }
