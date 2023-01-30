@@ -1,4 +1,21 @@
+fint:
+  application-id: fint-kontroll-orgunit-factory
+  kafka:
+    topic:
+      org-id: ${fint.org-id}
+      domain-context: ressurs
+    application-id: ${fint.application-id}
 spring:
+  kafka:
+    consumer:
+      group-id: ${fint.application-id}
+    profiles:
+      include:
+        - observability
+  logging:
+    level:
+      root: INFO
+      org.apache.kafka: INFO
   security:
     oauth2:
       resourceserver:
