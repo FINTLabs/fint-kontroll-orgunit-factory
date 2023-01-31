@@ -1,5 +1,8 @@
 fint:
   application-id: fint-kontroll-orgunit-factory
+  cache:
+    defaultCacheEntryTimeToLiveMillis: 518400000
+    defaultCacheHeapSize: 1000000
   kafka:
     topic:
       org-id: ${fint.org-id}

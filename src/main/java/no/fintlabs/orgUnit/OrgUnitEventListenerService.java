@@ -20,22 +20,13 @@ public class OrgUnitEventListenerService {
         organisasjonselementResourceCache.addEventListener(new FintEhCacheEventListener<>() {
             public void onEvent(FintCacheEvent<String, OrganisasjonselementResource> fintCacheEvent) {
                 onOrgUnitEvent(fintCacheEvent);
-                
             }
         });
     }
 
     private void onOrgUnitEvent(FintCacheEvent<String, OrganisasjonselementResource> fintCacheEvent) {
         OrganisasjonselementResource organisasjonselementResource = fintCacheEvent.getNewValue();
-        String overordnetOrganisasjonselementResourceHref = ResourceLinkUtil.getFirstLink(
-             organisasjonselementResource::getOverordnet,
-             organisasjonselementResource,
-             "Overordnet"
-        );
+        orgUnitService.create(organisasjonselementResource);
 
-        organisasjonselementResourceCache.getOptional(overordnetOrganisasjonselementResourceHref)
-                .ifPresent(overorndaOrganisasjonselementResource -> orgUnitService.create(
-                        organisasjonselementResource
-                ));
     }
 }

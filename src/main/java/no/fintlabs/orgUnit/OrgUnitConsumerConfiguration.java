@@ -40,8 +40,7 @@ public class OrgUnitConsumerConfiguration {
                 consumerRecord -> cache.put(
                         ResourceLinkUtil.getSelfLinks(consumerRecord.value()),
                         consumerRecord.value()
-                ),
-                new CommonLoggingErrorHandler()
+                )
         ).createContainer(EntityTopicNameParameters.builder().resource(resourceReference).build());
     }
 }
