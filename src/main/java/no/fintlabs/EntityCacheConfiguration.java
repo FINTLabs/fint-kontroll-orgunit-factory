@@ -1,4 +1,4 @@
-package no.fintlabs.orgUnit;
+package no.fintlabs;
 
 
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
@@ -10,16 +10,21 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Locale;
 
 @Configuration
-public class OrgUnitCacheConfiguration {
+public class EntityCacheConfiguration {
     private final FintCacheManager fintCacheManager;
 
-    public OrgUnitCacheConfiguration(FintCacheManager fintCacheManager) {
+    public EntityCacheConfiguration(FintCacheManager fintCacheManager) {
         this.fintCacheManager = fintCacheManager;
     }
 
     @Bean
     FintCache<String, OrganisasjonselementResource> organisasjonselementResourceCache() {
         return createCache(OrganisasjonselementResource.class);
+    }
+
+    @Bean
+    FintCache<String,Integer> publishedHashCache(){
+        return createCache(Integer.class);
     }
 
     private <V>FintCache<String, V> createCache( Class<V> resourceClass) {
