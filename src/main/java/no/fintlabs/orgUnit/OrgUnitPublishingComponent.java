@@ -37,7 +37,8 @@ public class OrgUnitPublishingComponent {
                 .map(Optional::get)
                 .toList();
 
-        orgUnitEntityProducerService.publish(validOrgUnits);
+        List<OrgUnit> publishedOrgUnits = orgUnitEntityProducerService.publish(validOrgUnits);
+        log.info("Published {} og {} valid orgUnits", publishedOrgUnits.size(), validOrgUnits.size());
     }
 
     private Optional<OrgUnit> createOrgUnit( OrganisasjonselementResource organisasjonselementResource){

@@ -14,14 +14,15 @@ import java.util.List;
 public class OrgUnitEntityProducerService {
     private final EntityProducer<OrgUnit> entityProducer;
     private final EntityTopicNameParameters entityTopicNameParameters;
-    private final FintCache<String,Integer> publishedHashCache;
+    private final FintCache<String,OrgUnit> publishedOrgUnitCache;
 
     public OrgUnitEntityProducerService(
             EntityProducerFactory entityProducerFactory,
             EntityTopicService entityTopicService,
-            FintCache<String, Integer> publishedHashCache) {
+            FintCache<String, OrgUnit> publishedOrgUnitCache) {
         entityProducer = entityProducerFactory.createProducer(OrgUnit.class);
-        this.publishedHashCache = publishedHashCache;
+        this.publishedOrgUnitCache = publishedOrgUnitCache;
+
         entityTopicNameParameters =  EntityTopicNameParameters
                 .builder()
                 .resource("orgunit")
@@ -33,9 +34,9 @@ public class OrgUnitEntityProducerService {
     public List<OrgUnit> publish(List<OrgUnit> orgUnits){
         return orgUnits
                 .stream()
-                .filter(orgUnit -> publishedHashCache
+                .filter(orgUnit -> publishedOrgUnitCache
                         .getOptional(orgUnit.getResourceId())
-                        .map(publishedHashCache -> publishedHashCache!= orgUnit.hashCode())
+                        .map(publishedOrgUnit -> !orgUnit.equals(publishedOrgUnit))
                         .orElse(true)
                 )
                 .peek(this::publish)

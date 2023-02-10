@@ -1,9 +1,9 @@
 package no.fintlabs;
 
-
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fintlabs.cache.FintCache;
 import no.fintlabs.cache.FintCacheManager;
+import no.fintlabs.orgUnit.OrgUnit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,8 +23,8 @@ public class EntityCacheConfiguration {
     }
 
     @Bean
-    FintCache<String,Integer> publishedHashCache(){
-        return createCache(Integer.class);
+    FintCache<String,OrgUnit> publishedOrgUnitCache() {
+        return createCache(OrgUnit.class);
     }
 
     private <V>FintCache<String, V> createCache( Class<V> resourceClass) {

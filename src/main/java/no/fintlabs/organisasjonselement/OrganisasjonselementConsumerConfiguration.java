@@ -46,15 +46,16 @@ public class OrganisasjonselementConsumerConfiguration {
 
     @Bean
     ConcurrentMessageListenerContainer<String, OrgUnit> orgUnitEntityConsumer(
-            FintCache<String, Integer> publishedHashCache){
+            FintCache<String, OrgUnit> publishedOrgUnitCache){
         return entityConsumerFactoryService.createFactory(
                 OrgUnit.class,
-                orgUnitConsumerRecord -> publishedHashCache.put(
-                        orgUnitConsumerRecord.value().getResourceId(),
-                        orgUnitConsumerRecord.value().hashCode()
-                )
-        ).createContainer(EntityTopicNameParameters.builder().resource("orgunit").build());
+                consumerRecord -> {
+                    OrgUnit orgUnit = consumerRecord.value();
+                    publishedOrgUnitCache.put(
+                            orgUnit.getResourceId(),
+                            orgUnit
+                    );
+                }
+                ).createContainer(EntityTopicNameParameters.builder().resource("orgunit").build());
     }
-
-
 }
