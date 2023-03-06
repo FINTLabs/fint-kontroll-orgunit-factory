@@ -24,4 +24,5 @@ public class GyldighetsperiodeService {
 
     public static class NullPeriodeExecption extends RuntimeException{}
 
+
 }
