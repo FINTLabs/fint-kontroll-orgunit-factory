@@ -43,6 +43,12 @@ public class OrgUnitPublishingComponent {
     }
 
     private Optional<OrgUnit> createOrgUnit( OrganisasjonselementResource organisasjonselementResource){
+        log.info("resourceID: " +ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource));
+        log.info("orgUnitId: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi());
+        log.info("name: " + organisasjonselementResource.getNavn());
+        log.info("shortName: " + organisasjonselementResource.getKortnavn());
+        log.info("managerRef: "+ organisasjonselementResource.getLeder().toString());
+
         return Optional.of(
                 OrgUnit
                 .builder()
