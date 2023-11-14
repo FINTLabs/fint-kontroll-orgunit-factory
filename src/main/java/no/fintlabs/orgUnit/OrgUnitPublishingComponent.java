@@ -33,9 +33,11 @@ public class OrgUnitPublishingComponent {
 
         List<OrgUnit> validOrgUnits = organisasjonselementService.getAllValid(currentTime)
                 .stream()
+                .peek(organisasjonselementResource -> System.out.println("Valid organisasjonselement: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi()))
                 .map(this::createOrgUnit)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .peek(orgUnit -> System.out.println("Oppretta orgunit: "+ orgUnit.getOrganisationUnitId()))
                 .toList();
 
         List<OrgUnit> publishedOrgUnits = orgUnitEntityProducerService.publish(validOrgUnits);
@@ -47,6 +49,8 @@ public class OrgUnitPublishingComponent {
         log.info("orgUnitId: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi());
         log.info("name: " + organisasjonselementResource.getNavn());
         log.info("shortName: " + organisasjonselementResource.getKortnavn());
+        log.info("parentRef: " + organisasjonselementService.getParentOrganisasjonselementOrganisasjonsId(organisasjonselementResource));
+        log.info("childrernRef: "+organisasjonselementService.getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(organisasjonselementResource));
         log.info("managerRef: "+ organisasjonselementResource.getLeder().toString());
 
         return Optional.of(
