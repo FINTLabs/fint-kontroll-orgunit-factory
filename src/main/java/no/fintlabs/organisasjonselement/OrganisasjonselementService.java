@@ -87,7 +87,7 @@ public class OrganisasjonselementService {
         );
 
         return organisasjonselementResourceCache
-                .get(parentOrganisasjonselementOrganisasjonsHref)
+                .get(parentOrganisasjonselementOrganisasjonsHref.toLowerCase())
                 .getOrganisasjonsId()
                 .getIdentifikatorverdi();
     }
