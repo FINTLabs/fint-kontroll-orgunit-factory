@@ -44,7 +44,11 @@ public class OrgUnitEntityProducerService {
                 .peek(orgUnit -> System.out.println("Sendt til publisering: "+ orgUnit.getResourceId() ))
                 .peek(this::publish)
                 .toList();
+
+
+
     }
+
 
     public void publish(OrgUnit orgUnit){
       String key = orgUnit.getResourceId();
