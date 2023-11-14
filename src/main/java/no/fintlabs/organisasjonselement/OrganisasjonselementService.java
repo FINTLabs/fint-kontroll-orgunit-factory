@@ -1,5 +1,6 @@
 package no.fintlabs.organisasjonselement;
 
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fintlabs.cache.FintCache;
@@ -65,6 +66,7 @@ public class OrganisasjonselementService {
     public List<String> getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(
             OrganisasjonselementResource organisasjonselementResource) {
         String organisasjonsenhetHref = ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource);
+        log.info("Href til childrenelement: " + organisasjonsenhetHref);
         List<String> underordnetOrganisasjonsenhetOrganisasjonsId =
                 organisasjonselementResourceCache
                         .get(ResourceLinkUtil.organisasjonsIdToLowerCase(organisasjonsenhetHref))
@@ -75,6 +77,7 @@ public class OrganisasjonselementService {
                                 .get(ResourceLinkUtil.organisasjonsIdToLowerCase(href)))
                         .map(orgunit -> orgunit.getOrganisasjonsId().getIdentifikatorverdi())
                         .toList();
+        log.info("Id til underorndet orgenhet: " + underordnetOrganisasjonsenhetOrganisasjonsId);
         return underordnetOrganisasjonsenhetOrganisasjonsId;
     }
 
