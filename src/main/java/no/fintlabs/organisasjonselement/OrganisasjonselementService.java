@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,7 +50,15 @@ public class OrganisasjonselementService {
     }
 
     private boolean parentIsInCache(String key){
-        return organisasjonselementResourceCache.getOptional(key).isPresent();
+        String parentId = organisasjonselementResourceCache
+                .getOptional(key)
+                .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
+                .orElse("Ingen orgID funnet");
+        System.out.println("key: " + key);
+        System.out.println("parentId: "+ parentId);
+        boolean present = organisasjonselementResourceCache.getOptional(key).isPresent();
+        System.out.println("funnet parent: " + present);
+        return present;
     }
 
 
