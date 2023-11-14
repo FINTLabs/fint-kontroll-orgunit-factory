@@ -51,7 +51,7 @@ public class OrganisasjonselementService {
 
     private boolean parentIsInCache(String key){
         String parentId = organisasjonselementResourceCache
-                .getOptional(key)
+                .getOptional(key.toLowerCase())
                 .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .orElse("Ingen orgID funnet");
         System.out.println("key: " + key);
