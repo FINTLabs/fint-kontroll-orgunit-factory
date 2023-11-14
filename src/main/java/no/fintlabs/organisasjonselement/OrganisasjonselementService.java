@@ -54,10 +54,10 @@ public class OrganisasjonselementService {
                 .getOptional(key.toLowerCase())
                 .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .orElse("Ingen orgID funnet");
-        System.out.println("key: " + key);
-        System.out.println("parentId: "+ parentId);
-        boolean present = organisasjonselementResourceCache.getOptional(key).isPresent();
-        System.out.println("funnet parent: " + present);
+        System.out.println("1: key: " + key);
+        System.out.println("2: parentId: "+ parentId);
+        boolean present = organisasjonselementResourceCache.getOptional(key.toLowerCase()).isPresent();
+        System.out.println("3: funnet parent: " + present);
         return present;
     }
 
