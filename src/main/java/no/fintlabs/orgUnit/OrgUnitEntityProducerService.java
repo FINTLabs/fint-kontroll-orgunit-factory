@@ -34,11 +34,14 @@ public class OrgUnitEntityProducerService {
     public List<OrgUnit> publish(List<OrgUnit> orgUnits){
         return orgUnits
                 .stream()
+                .peek(orgUnit -> System.out.println("funnet i hascache: "+ publishedOrgUnitCache
+                        .getOptional(orgUnit.getResourceId())))
                 .filter(orgUnit -> publishedOrgUnitCache
                         .getOptional(orgUnit.getResourceId())
                         .map(publishedOrgUnit -> !orgUnit.equals(publishedOrgUnit))
                         .orElse(true)
                 )
+                .peek(orgUnit -> System.out.println("Sendt til publisering: "+ orgUnit.getResourceId() ))
                 .peek(this::publish)
                 .toList();
     }
