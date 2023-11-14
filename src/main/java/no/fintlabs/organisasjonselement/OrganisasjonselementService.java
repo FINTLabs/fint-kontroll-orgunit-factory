@@ -32,6 +32,8 @@ public class OrganisasjonselementService {
                 ))
                 .filter(organisasjonselementResource -> hasParent(organisasjonselementResource))
                 .toList();
+
+        System.out.println("Lengde på cache: "+organisasjonselementResourceCache.getAllDistinct().size());
         return allValidOrganisasjonselementer;
 
     }

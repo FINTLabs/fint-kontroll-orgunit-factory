@@ -30,6 +30,7 @@ public class OrgUnitPublishingComponent {
     public void publishOrgUnits(){
         Date currentTime = Date.from(Instant.now());
 
+
         List<OrgUnit> validOrgUnits = organisasjonselementService.getAllValid(currentTime)
                 .stream()
                 .map(this::createOrgUnit)
