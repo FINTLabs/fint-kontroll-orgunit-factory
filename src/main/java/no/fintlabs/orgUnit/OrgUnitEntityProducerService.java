@@ -1,5 +1,6 @@
 package no.fintlabs.orgUnit;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.cache.FintCache;
 import no.fintlabs.kafka.entity.EntityProducer;
 import no.fintlabs.kafka.entity.EntityProducerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrgUnitEntityProducerService {
     private final EntityProducer<OrgUnit> entityProducer;
     private final EntityTopicNameParameters entityTopicNameParameters;
@@ -41,7 +43,6 @@ public class OrgUnitEntityProducerService {
                         .map(publishedOrgUnit -> !orgUnit.equals(publishedOrgUnit))
                         .orElse(true)
                 )
-                .peek(orgUnit -> System.out.println("Sendt til publisering: "+ orgUnit.getResourceId() ))
                 .peek(this::publish)
                 .toList();
 
@@ -52,6 +53,7 @@ public class OrgUnitEntityProducerService {
 
     public void publish(OrgUnit orgUnit){
       String key = orgUnit.getResourceId();
+      log.info("For publisering:::: "+orgUnit.getResourceId() );
       entityProducer.send(
               EntityProducerRecord.<OrgUnit>builder()
                       .topicNameParameters(entityTopicNameParameters)
