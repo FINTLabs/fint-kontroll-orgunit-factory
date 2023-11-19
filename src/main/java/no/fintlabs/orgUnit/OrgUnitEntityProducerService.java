@@ -36,8 +36,6 @@ public class OrgUnitEntityProducerService {
     public List<OrgUnit> publish(List<OrgUnit> orgUnits){
         return orgUnits
                 .stream()
-                .peek(orgUnit -> System.out.println("funnet i hascache: "+ publishedOrgUnitCache
-                        .getOptional(orgUnit.getResourceId())))
                 .filter(orgUnit -> publishedOrgUnitCache
                         .getOptional(orgUnit.getResourceId())
                         .map(publishedOrgUnit -> !orgUnit.equals(publishedOrgUnit))
@@ -45,15 +43,12 @@ public class OrgUnitEntityProducerService {
                 )
                 .peek(this::publish)
                 .toList();
-
-
-
     }
 
 
     public void publish(OrgUnit orgUnit){
       String key = orgUnit.getResourceId();
-      log.info("For publisering:::: "+orgUnit.getResourceId() );
+      log.info("Publishing to kafka: "+orgUnit.getResourceId() );
       entityProducer.send(
               EntityProducerRecord.<OrgUnit>builder()
                       .topicNameParameters(entityTopicNameParameters)

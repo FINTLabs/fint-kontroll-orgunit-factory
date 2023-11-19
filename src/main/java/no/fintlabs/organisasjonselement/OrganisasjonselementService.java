@@ -55,10 +55,8 @@ public class OrganisasjonselementService {
                 .getOptional(key.toLowerCase())
                 .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .orElse("Ingen orgID funnet");
-        System.out.println("1: key: " + key);
-        System.out.println("2: parentId: "+ parentId);
         boolean present = organisasjonselementResourceCache.getOptional(key.toLowerCase()).isPresent();
-        System.out.println("3: funnet parent: " + present);
+        log.info("Parent orgunit found: " +present);
         return present;
     }
 
@@ -66,7 +64,6 @@ public class OrganisasjonselementService {
     public List<String> getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(
             OrganisasjonselementResource organisasjonselementResource) {
         String organisasjonsenhetHref = ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource);
-        log.info("Href til childrenelement: " + organisasjonsenhetHref);
         List<String> underordnetOrganisasjonsenhetOrganisasjonsId =
                 organisasjonselementResourceCache
                         .get(ResourceLinkUtil.organisasjonsIdToLowerCase(organisasjonsenhetHref))
@@ -77,7 +74,6 @@ public class OrganisasjonselementService {
                                 .get(ResourceLinkUtil.organisasjonsIdToLowerCase(href)))
                         .map(orgunit -> orgunit.getOrganisasjonsId().getIdentifikatorverdi())
                         .toList();
-        log.info("Id til underorndet orgenhet: " + underordnetOrganisasjonsenhetOrganisasjonsId);
         return underordnetOrganisasjonsenhetOrganisasjonsId;
     }
 
