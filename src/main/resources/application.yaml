@@ -17,9 +17,9 @@ spring:
   kafka:
     consumer:
       group-id: ${fint.application-id}
-    profiles:
-      include:
-        - observability
+  profiles:
+     include:
+       - observability
   logging:
     level:
       root: INFO
