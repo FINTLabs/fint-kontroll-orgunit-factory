@@ -15,10 +15,12 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class OrgUnitPublishingComponent {
+
     private final OrganisasjonselementService organisasjonselementService;
     private final OrgUnitEntityProducerService orgUnitEntityProducerService;
 
-    public OrgUnitPublishingComponent(OrganisasjonselementService organisasjonselementService, OrgUnitEntityProducerService orgUnitEntityProducerService) {
+    public OrgUnitPublishingComponent(OrganisasjonselementService organisasjonselementService,
+                                      OrgUnitEntityProducerService orgUnitEntityProducerService) {
         this.organisasjonselementService = organisasjonselementService;
         this.orgUnitEntityProducerService = orgUnitEntityProducerService;
     }
@@ -27,48 +29,54 @@ public class OrgUnitPublishingComponent {
             initialDelayString = "${fint.kontroll.orgunit.publishing.initial-delay}",
             fixedDelayString = "${fint.kontroll.orgunit.publishing.fixed-delay}"
     )
-    public void publishOrgUnits(){
+    public void publishOrgUnits() {
         Date currentTime = Date.from(Instant.now());
 
 
         List<OrgUnit> validOrgUnits = organisasjonselementService.getAllValid(currentTime)
                 .stream()
-                .peek(organisasjonselementResource -> System.out.println("Valid organisasjonselement: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi()))
+                .peek(organisasjonselementResource -> System.out.println(
+                        "Valid organisasjonselement: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi()))
                 .map(this::createOrgUnit)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .peek(orgUnit -> System.out.println("Oppretta orgunit: "+ orgUnit.getOrganisationUnitId()))
+                .peek(orgUnit -> System.out.println("Oppretta orgunit: " + orgUnit.getOrganisationUnitId()))
                 .toList();
 
         List<OrgUnit> publishedOrgUnits = orgUnitEntityProducerService.publish(validOrgUnits);
         log.info("Published {} og {} valid orgUnits", publishedOrgUnits.size(), validOrgUnits.size());
     }
 
-    private Optional<OrgUnit> createOrgUnit( OrganisasjonselementResource organisasjonselementResource){
-        log.info("resourceID: " +ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource));
+    Optional<OrgUnit> createOrgUnit(OrganisasjonselementResource organisasjonselementResource) {
+        String parentOrganisasjonselementOrganisasjonsId =
+                organisasjonselementService.getParentOrganisasjonselementOrganisasjonsId(organisasjonselementResource);
+
+        List<String> childrenOrganisasjonselementUnitResourceOrganisasjonsId =
+                organisasjonselementService.getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(organisasjonselementResource);
+
+        List<String> allSubOrgUnitRefs = organisasjonselementService.getAllSubOrgUnitsRefs(organisasjonselementResource);
+
+        log.info("resourceID: " + ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource));
         log.info("orgUnitId: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi());
         log.info("name: " + organisasjonselementResource.getNavn());
         log.info("shortName: " + organisasjonselementResource.getKortnavn());
-        log.info("parentRef: " + organisasjonselementService.getParentOrganisasjonselementOrganisasjonsId(organisasjonselementResource));
-        log.info("childrernRef: "+organisasjonselementService.getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(organisasjonselementResource));
-        log.info("managerRef: "+ organisasjonselementResource.getLeder().toString());
+        log.info("parentRef: " + parentOrganisasjonselementOrganisasjonsId);
+        log.info("childrernRef: " + childrenOrganisasjonselementUnitResourceOrganisasjonsId);
+        log.info("managerRef: " + organisasjonselementResource.getLeder().toString());
+        log.info("subOrgUnitRefs: " + allSubOrgUnitRefs);
 
         return Optional.of(
-                OrgUnit
-                .builder()
-                .resourceId(ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource))
-                .organisationUnitId(organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
-                .name(organisasjonselementResource.getNavn())
-                .shortName(organisasjonselementResource.getKortnavn())
-                .parentRef(organisasjonselementService
-                        .getParentOrganisasjonselementOrganisasjonsId(organisasjonselementResource))
-                .childrenRef(organisasjonselementService
-                        .getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(organisasjonselementResource))
-                .managerRef(organisasjonselementResource.getLeder().toString())
-                .build());
+                OrgUnit.builder()
+                        .resourceId(ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource))
+                        .organisationUnitId(organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
+                        .name(organisasjonselementResource.getNavn())
+                        .shortName(organisasjonselementResource.getKortnavn())
+                        .parentRef(parentOrganisasjonselementOrganisasjonsId)
+                        .childrenRef(childrenOrganisasjonselementUnitResourceOrganisasjonsId)
+                        .managerRef(organisasjonselementResource.getLeder().toString())
+                        .allSubOrgUnitsRef(allSubOrgUnitRefs)
+                        .build());
     }
-
-
 
 
 }

@@ -4,6 +4,7 @@ package no.fintlabs.orgUnit;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,6 +17,6 @@ public class OrgUnit {
     private String shortName;
     private String parentRef;
     private List<String> childrenRef;
+    private List<String> allSubOrgUnitsRef;
     private String managerRef;
-
 }
