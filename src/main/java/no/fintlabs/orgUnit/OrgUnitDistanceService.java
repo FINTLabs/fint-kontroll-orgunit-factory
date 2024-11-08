@@ -6,25 +6,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j
 public class OrgUnitDistanceService {
 
-    private final FintCache<String,OrgUnit> orgUnitCache;
+    private final FintCache<String, OrgUnit> orgUnitCache;
 
     public OrgUnitDistanceService(FintCache<String, OrgUnit> orgUnitCache) {
         this.orgUnitCache = orgUnitCache;
     }
 
-    public int findDistance(String orgUnit, String orgUnitDistance) {
-        return 0;
-    }
-
-    public String findToplevelOrgUnit(Set<OrgUnit> orgUnits) {
-        return null;
-    }
 
     public List<OrgUnit> getAllOrgUnits() {
         List<OrgUnit> orgUnits = orgUnitCache.getAllDistinct();
@@ -43,6 +35,27 @@ public class OrgUnitDistanceService {
         return orgUnitCache.getAllDistinct().stream()
                 .filter(orgUnitAbove -> orgUnitAbove.getOrganisationUnitId().equals(orgUnit.getParentRef()))
                 .findFirst();
+    }
+
+    public OrgUnitDistance createOrgUnitDistance(String startOrgUnitId, String currentOrgUnitId, int distance) {
+
+        return OrgUnitDistance
+                .builder()
+                .key(currentOrgUnitId + "_" + startOrgUnitId)
+                .orgUnitId(currentOrgUnitId)
+                .subOrgUnitId(startOrgUnitId)
+                .distance(distance)
+                .build();
+    }
+
+    public OrgUnitDistance createSelfOrgUnitDistance(OrgUnit orgUnit) {
+        return OrgUnitDistance
+                .builder()
+                .key(orgUnit.getOrganisationUnitId() + "_" + orgUnit.getOrganisationUnitId())
+                .orgUnitId(orgUnit.getOrganisationUnitId())
+                .subOrgUnitId(orgUnit.getOrganisationUnitId())
+                .distance(0)
+                .build();
     }
 
 }
