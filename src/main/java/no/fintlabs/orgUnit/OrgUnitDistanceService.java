@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.cache.FintCache;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,7 +34,15 @@ public class OrgUnitDistanceService {
     }
 
     public boolean hasParentOrgUnit(OrgUnit orgUnit) {
-        return orgUnit.getOrganisationUnitId().equals(orgUnit.getParentRef());
+        return !orgUnit.getOrganisationUnitId().equals(orgUnit.getParentRef());
+    }
+
+
+    public Optional<OrgUnit> getParentOrgUnit(OrgUnit orgUnit) {
+
+        return orgUnitCache.getAllDistinct().stream()
+                .filter(orgUnitAbove -> orgUnitAbove.getOrganisationUnitId().equals(orgUnit.getParentRef()))
+                .findFirst();
     }
 
 }

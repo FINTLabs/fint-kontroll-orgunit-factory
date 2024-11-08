@@ -57,7 +57,7 @@ public class OrganisasjonselementService {
                 .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .orElse("Ingen orgID funnet");
         boolean present = organisasjonselementResourceCache.getOptional(key.toLowerCase()).isPresent();
-        log.info("Parent orgunit found: " + present);
+
         return present;
     }
 
