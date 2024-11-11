@@ -19,8 +19,8 @@ public class OrgUnitDistancePublishingComponent {
     }
 
     @Scheduled(
-            initialDelayString = "50000",
-            fixedDelayString = "30000"
+            initialDelayString = "${fint.kontroll.orgunitdistance.publishing.initial-delay}",
+            fixedDelayString = "${fint.kontroll.orgunitdistance.publishing.fixed-delay}"
     )
     public void publishOrgUnitDistance() {
         log.info("Start publishing orgUnit distance");
