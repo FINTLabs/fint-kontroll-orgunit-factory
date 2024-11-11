@@ -3,6 +3,7 @@ package no.fintlabs.orgUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,35 +24,30 @@ public class OrgUnitDistancePublishingComponent {
     )
     public void publishOrgUnitDistance() {
         log.info("Start publishing orgUnit distance");
-        List<OrgUnitDistance> allOrgUnitDistances =new ArrayList<>();
+        List<OrgUnitDistance> allOrgUnitDistances = new ArrayList<>();
 
         orgUnitDistanceService.getAllOrgUnits().forEach(orgUnit -> {
             int distance = 0;
             allOrgUnitDistances.add(orgUnitDistanceService.createSelfOrgUnitDistance(orgUnit));
 
             String startOrgUnitId = orgUnit.getOrganisationUnitId();
-
             OrgUnit currentOrgUnit = orgUnit;
 
             while (orgUnitDistanceService.hasParentOrgUnit(currentOrgUnit)) {
                 distance++;
-                if (orgUnitDistanceService.getParentOrgUnit(currentOrgUnit).isPresent()){
+                if (orgUnitDistanceService.getParentOrgUnit(currentOrgUnit).isPresent()) {
                     currentOrgUnit = orgUnitDistanceService.getParentOrgUnit(currentOrgUnit).get();
 
                     allOrgUnitDistances.add(orgUnitDistanceService.createOrgUnitDistance(startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance));
-                    log.info("From orgUnitId : {} - to orgUnitId {} - distance: {}", startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance );
-
-                //TODO: hvorfor treffer ikke denne.....?
-                }
-                else {
-                    log.info("{} has {} levels of orgunits above", orgUnit.getName(), distance);
+                    log.info("From orgUnitId : {} - to orgUnitId {} - distance: {}", startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance);
                 }
             }
 
+            log.info("{} has {} levels of orgunits above", orgUnit.getName(), distance);
         });
 
-        List<OrgUnitDistance>  publishedOrgUnitDistances =orgUnitDistanceProducerService.publish(allOrgUnitDistances);
-        log.info("Finished publishing orgUnit distance");
+        List<OrgUnitDistance> publishedOrgUnitDistances = orgUnitDistanceProducerService.publish(allOrgUnitDistances);
         log.info("Published {} orgUnitDistances", publishedOrgUnitDistances.size());
+        log.info("Finished publishing orgUnit distance");
     }
 }

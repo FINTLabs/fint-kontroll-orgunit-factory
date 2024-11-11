@@ -35,12 +35,11 @@ public class OrgUnitPublishingComponent {
 
         List<OrgUnit> validOrgUnits = organisasjonselementService.getAllValid(currentTime)
                 .stream()
-                .peek(organisasjonselementResource -> System.out.println(
-                        "Valid organisasjonselement: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi()))
+                .peek(organisasjonselementResource -> log.info("Valid organisasjonselement: {}", organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi()))
                 .map(this::createOrgUnit)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .peek(orgUnit -> System.out.println("Oppretta orgunit: " + orgUnit.getOrganisationUnitId()))
+                .peek(orgUnit -> log.info("Oppretta orgunit: {}", orgUnit.getOrganisationUnitId()))
                 .toList();
 
         List<OrgUnit> publishedOrgUnits = orgUnitEntityProducerService.publish(validOrgUnits);
@@ -56,14 +55,14 @@ public class OrgUnitPublishingComponent {
 
         List<String> allSubOrgUnitRefs = organisasjonselementService.getAllSubOrgUnitsRefs(organisasjonselementResource);
 
-        log.info("resourceID: " + ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource));
-        log.info("orgUnitId: " + organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi());
-        log.info("name: " + organisasjonselementResource.getNavn());
-        log.info("shortName: " + organisasjonselementResource.getKortnavn());
-        log.info("parentRef: " + parentOrganisasjonselementOrganisasjonsId);
-        log.info("childrernRef: " + childrenOrganisasjonselementUnitResourceOrganisasjonsId);
-        log.info("managerRef: " + organisasjonselementResource.getLeder().toString());
-        log.info("subOrgUnitRefs: " + allSubOrgUnitRefs);
+        log.info("resourceID: {}", ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource));
+        log.info("orgUnitId: {}", organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi());
+        log.info("name: {}", organisasjonselementResource.getNavn());
+        log.info("shortName: {}", organisasjonselementResource.getKortnavn());
+        log.info("parentRef: {}", parentOrganisasjonselementOrganisasjonsId);
+        log.info("childrernRef: {}", childrenOrganisasjonselementUnitResourceOrganisasjonsId);
+        log.info("managerRef: {}", organisasjonselementResource.getLeder().toString());
+        log.info("subOrgUnitRefs: {}", allSubOrgUnitRefs);
 
         return Optional.of(
                 OrgUnit.builder()
