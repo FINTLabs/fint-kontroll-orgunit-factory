@@ -4,6 +4,7 @@ import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementRe
 import no.fintlabs.cache.FintCache;
 import no.fintlabs.cache.FintCacheManager;
 import no.fintlabs.orgUnit.OrgUnit;
+import no.fintlabs.orgUnit.OrgUnitDistance;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,11 @@ public class EntityCacheConfiguration {
     @Bean
     FintCache<String, OrganisasjonselementResource> organisasjonselementResourceCache() {
         return createCache(OrganisasjonselementResource.class);
+    }
+
+    @Bean
+    FintCache<String, OrgUnitDistance> orgUnitDistanceCache() {
+        return createCache(OrgUnitDistance.class);
     }
 
     @Bean

@@ -39,11 +39,11 @@ public class OrgUnitDistancePublishingComponent {
                     currentOrgUnit = orgUnitDistanceService.getParentOrgUnit(currentOrgUnit).get();
 
                     allOrgUnitDistances.add(orgUnitDistanceService.createOrgUnitDistance(startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance));
-                    log.info("From orgUnitId : {} - to orgUnitId {} - distance: {}", startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance);
+                    log.debug("From orgUnitId : {} - to orgUnitId {} - distance: {}", startOrgUnitId, currentOrgUnit.getOrganisationUnitId(), distance);
                 }
             }
 
-            log.info("{} has {} levels of orgunits above", orgUnit.getName(), distance);
+            log.debug("{} has {} levels of orgunits above", orgUnit.getName(), distance);
         });
 
         List<OrgUnitDistance> publishedOrgUnitDistances = orgUnitDistanceProducerService.publish(allOrgUnitDistances);
