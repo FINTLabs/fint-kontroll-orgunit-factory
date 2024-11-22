@@ -48,14 +48,4 @@ public class OrgUnitDistanceService {
                 .build();
     }
 
-    public OrgUnitDistance createSelfOrgUnitDistance(OrgUnit orgUnit) {
-        return OrgUnitDistance
-                .builder()
-                .key(orgUnit.getOrganisationUnitId() + "_" + orgUnit.getOrganisationUnitId())
-                .orgUnitId(orgUnit.getOrganisationUnitId())
-                .subOrgUnitId(orgUnit.getOrganisationUnitId())
-                .distance(0)
-                .build();
-    }
-
 }

@@ -28,10 +28,9 @@ public class OrgUnitDistancePublishingComponent {
 
         orgUnitDistanceService.getAllOrgUnits().forEach(orgUnit -> {
             int distance = 0;
-            allOrgUnitDistances.add(orgUnitDistanceService.createSelfOrgUnitDistance(orgUnit));
-
             String startOrgUnitId = orgUnit.getOrganisationUnitId();
             OrgUnit currentOrgUnit = orgUnit;
+            allOrgUnitDistances.add(orgUnitDistanceService.createOrgUnitDistance(startOrgUnitId,startOrgUnitId,distance));
 
             while (orgUnitDistanceService.hasParentOrgUnit(currentOrgUnit)) {
                 distance++;
