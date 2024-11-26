@@ -13,6 +13,10 @@ fint:
       publishing:
         initial-delay: 20000
         fixed-delay: 25000
+    orgunitdistance:
+      publishing:
+        initial-delay: 5000
+        fixed-delay: 15000
 spring:
   kafka:
     consumer:

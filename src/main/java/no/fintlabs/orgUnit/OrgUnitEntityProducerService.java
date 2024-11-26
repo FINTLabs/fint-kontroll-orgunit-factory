@@ -48,7 +48,7 @@ public class OrgUnitEntityProducerService {
 
     public void publish(OrgUnit orgUnit){
       String key = orgUnit.getResourceId();
-      log.info("Publishing to kafka: "+orgUnit.getResourceId() );
+        log.info("Publishing to kafka: {}", orgUnit.getResourceId());
       entityProducer.send(
               EntityProducerRecord.<OrgUnit>builder()
                       .topicNameParameters(entityTopicNameParameters)

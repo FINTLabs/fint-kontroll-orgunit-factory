@@ -36,7 +36,7 @@ public class OrganisasjonselementService {
                 .filter(this::hasParent)
                 .toList();
 
-        System.out.println("Lengde på cache: " + organisasjonselementResourceCache.getAllDistinct().size());
+        log.info("Lengde på cache: {}", organisasjonselementResourceCache.getAllDistinct().size());
         return allValidOrganisasjonselementer;
 
     }
@@ -56,26 +56,23 @@ public class OrganisasjonselementService {
                 .getOptional(key.toLowerCase())
                 .map(organisasjonselementResource -> organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi())
                 .orElse("Ingen orgID funnet");
-        boolean present = organisasjonselementResourceCache.getOptional(key.toLowerCase()).isPresent();
-        log.info("Parent orgunit found: " + present);
-        return present;
+
+        return organisasjonselementResourceCache.getOptional(key.toLowerCase()).isPresent();
     }
 
 
     public List<String> getChildrenOrganisasjonselementUnitResourceOrganisasjonsId(
             OrganisasjonselementResource organisasjonselementResource) {
         String organisasjonsenhetHref = ResourceLinkUtil.getFirstSelfLink(organisasjonselementResource);
-        List<String> underordnetOrganisasjonsenhetOrganisasjonsId =
-                organisasjonselementResourceCache
-                        .get(ResourceLinkUtil.organisasjonsIdToLowerCase(organisasjonsenhetHref))
-                        .getUnderordnet()
-                        .stream()
-                        .map(link -> link.getHref())
-                        .map(href -> organisasjonselementResourceCache
-                                .get(ResourceLinkUtil.organisasjonsIdToLowerCase(href)))
-                        .map(orgunit -> orgunit.getOrganisasjonsId().getIdentifikatorverdi())
-                        .toList();
-        return underordnetOrganisasjonsenhetOrganisasjonsId;
+        return organisasjonselementResourceCache
+                .get(ResourceLinkUtil.organisasjonsIdToLowerCase(organisasjonsenhetHref))
+                .getUnderordnet()
+                .stream()
+                .map(Link::getHref)
+                .map(href -> organisasjonselementResourceCache
+                        .get(ResourceLinkUtil.organisasjonsIdToLowerCase(href)))
+                .map(orgunit -> orgunit.getOrganisasjonsId().getIdentifikatorverdi())
+                .toList();
     }
 
     public String getParentOrganisasjonselementOrganisasjonsId(
