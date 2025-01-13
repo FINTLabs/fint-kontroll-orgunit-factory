@@ -70,9 +70,9 @@ public class OrganisasjonselementConsumerConfiguration {
                 consumerRecord -> {
                     OrgUnitDistance orgUnitDistance = consumerRecord.value();
                     orgUnitDistanceCache.put(
-                            orgUnitDistance.getKey(),
+                            orgUnitDistance.getId(),
                             orgUnitDistance);
-                    log.debug("Added {} to cache", orgUnitDistance.getKey());
+                    log.debug("Added {} to cache", orgUnitDistance.getId());
                 }
         ).createContainer(EntityTopicNameParameters.builder().resource("orgunitdistance").build());
     }

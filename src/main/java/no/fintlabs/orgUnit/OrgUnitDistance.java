@@ -13,7 +13,7 @@ import java.util.Objects;
 @Builder
 @Slf4j
 public class OrgUnitDistance {
-    private String key;
+    private String id;
     private String orgUnitId;
     private String subOrgUnitId;
     private int distance;
@@ -23,11 +23,11 @@ public class OrgUnitDistance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrgUnitDistance that = (OrgUnitDistance) o;
-        return distance == that.distance && Objects.equals(key, that.key) && Objects.equals(orgUnitId, that.orgUnitId) && Objects.equals(subOrgUnitId, that.subOrgUnitId);
+        return distance == that.distance && Objects.equals(id, that.id) && Objects.equals(orgUnitId, that.orgUnitId) && Objects.equals(subOrgUnitId, that.subOrgUnitId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, orgUnitId, subOrgUnitId, distance);
+        return Objects.hash(id, orgUnitId, subOrgUnitId, distance);
     }
 }

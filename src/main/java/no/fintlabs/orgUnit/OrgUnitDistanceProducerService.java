@@ -36,7 +36,7 @@ public class OrgUnitDistanceProducerService {
         return orgUnitDistances
                 .stream()
                 .filter(orgUnitDistance -> orgUnitDistanceCache
-                        .getOptional(orgUnitDistance.getKey())
+                        .getOptional(orgUnitDistance.getId())
                         .map(publishedOrgUnitDistance -> !orgUnitDistance.equals(publishedOrgUnitDistance))
                         .orElse(true)
                 )
@@ -45,7 +45,7 @@ public class OrgUnitDistanceProducerService {
     }
 
     private void publish(OrgUnitDistance orgUnitDistance) {
-        String key = orgUnitDistance.getKey();
+        String key = orgUnitDistance.getId();
         entityProducer.send(
                 EntityProducerRecord.<OrgUnitDistance>builder()
                         .topicNameParameters(entityTopicNameParameters)

@@ -41,7 +41,7 @@ public class OrgUnitDistanceService {
 
         return OrgUnitDistance
                 .builder()
-                .key(currentOrgUnitId + "_" + startOrgUnitId)
+                .id(currentOrgUnitId + "_" + startOrgUnitId)
                 .orgUnitId(currentOrgUnitId)
                 .subOrgUnitId(startOrgUnitId)
                 .distance(distance)
