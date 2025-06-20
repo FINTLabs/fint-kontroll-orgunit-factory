@@ -18,6 +18,8 @@ spec:
       value: '50000'
     - name: fint.kontroll.orgunitdistance.publishing.fixed-delay
       value: '150000'
+    - name: fint.kafka.topic.org-id
+      value: "fintlabs-no"
   kafka:
     enabled: true
     acls:

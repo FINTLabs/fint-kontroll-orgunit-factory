@@ -10,7 +10,7 @@ commonLabels:
   app.kubernetes.io/component: backend
   app.kubernetes.io/part-of: fint-kontroll
   fintlabs.no/team: bas
-  fintlabs.no/org-id: vigo.no
+  fintlabs.no/org-id: fintlabs.no
 patches:
   - patch: |-
       - op: replace
@@ -18,10 +18,13 @@ patches:
         value: "vigo.no"
       - op: replace
         path: "/spec/kafka/acls/0/topic"
-        value: "fintlabs-no.kontroll.*"
+        value: "vigo-no.kontroll.*"
       - op: replace
         path: "/spec/kafka/acls/1/topic"
-        value: "fintlabs-no.kontroll.*"
+        value: "vigo-no.kontroll.*"
+      - op: replace
+        path: "/spec/env/5/value"
+        value: "vigo-no"
     target:
       kind: Application
       name: fint-kontroll-orgunit-factory
