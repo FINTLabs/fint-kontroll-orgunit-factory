@@ -24,13 +24,8 @@ spring:
   profiles:
      include:
        - observability
-  logging:
-    level:
-      root: INFO
-      org.apache.kafka: INFO
-      no.fintlabs.cache.ehcache.FintEhCacheEventLogger: WARN
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
+logging:
+  level:
+    root: INFO
+    org.apache.kafka: INFO
+    no.fintlabs.cache.ehcache.FintEhCacheEventLogger: WARN
