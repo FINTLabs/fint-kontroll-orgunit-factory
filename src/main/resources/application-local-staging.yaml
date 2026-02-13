@@ -7,6 +7,13 @@ fint:
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+novari:
+  kafka:
+    default-replicas: 1
+    topic:
+      domain-context: kontroll
+      org-id: fintlabs-no
+    application-id: ${fint.org-id}
 server:
   port: 8088
 logging:

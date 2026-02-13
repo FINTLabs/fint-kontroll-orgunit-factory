@@ -3,33 +3,47 @@ package no.fintlabs.orgUnit;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.cache.FintCache;
-import no.fintlabs.kafka.entity.EntityProducer;
-import no.fintlabs.kafka.entity.EntityProducerFactory;
-import no.fintlabs.kafka.entity.EntityProducerRecord;
-import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
-import no.fintlabs.kafka.entity.topic.EntityTopicService;
+import no.novari.kafka.producing.ParameterizedProducerRecord;
+import no.novari.kafka.producing.ParameterizedTemplate;
+import no.novari.kafka.producing.ParameterizedTemplateFactory;
+import no.novari.kafka.topic.EntityTopicService;
+import no.novari.kafka.topic.configuration.EntityCleanupFrequency;
+import no.novari.kafka.topic.configuration.EntityTopicConfiguration;
+import no.novari.kafka.topic.name.EntityTopicNameParameters;
+import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
 @Slf4j
 public class OrgUnitDistanceProducerService {
-    private final EntityProducer<OrgUnitDistance> entityProducer;
+    private final ParameterizedTemplate<OrgUnitDistance> parameterizedTemplate;
     private final EntityTopicNameParameters entityTopicNameParameters;
     private final FintCache<String,OrgUnitDistance> orgUnitDistanceCache;
 
-    public OrgUnitDistanceProducerService(
-            EntityProducerFactory entityProducerFactory,
-            EntityTopicService entityTopicService, FintCache<String, OrgUnitDistance> orgUnitDistanceCache
-    ){
-        entityProducer = entityProducerFactory.createProducer(OrgUnitDistance.class);
+    public OrgUnitDistanceProducerService(ParameterizedTemplateFactory parameterizedTemplateFactory,
+                                          FintCache<String,OrgUnitDistance> orgUnitDistanceCache,
+                                          EntityTopicService entityTopicService){
+        this.parameterizedTemplate = parameterizedTemplateFactory.createTemplate(OrgUnitDistance.class);
         this.orgUnitDistanceCache = orgUnitDistanceCache;
+
         entityTopicNameParameters = EntityTopicNameParameters
-                .builder()
-                .resource("orgunitdistance")
-                .build();
-        entityTopicService.ensureTopic(entityTopicNameParameters,0);
+               .builder()
+               .topicNamePrefixParameters(TopicNamePrefixParameters
+                       .stepBuilder()
+                       .orgIdApplicationDefault()
+                       .domainContextApplicationDefault().build()
+               ).resourceName("orgunitdistance")
+               .build();
+
+        entityTopicService.createOrModifyTopic(entityTopicNameParameters, EntityTopicConfiguration.stepBuilder()
+                .partitions(1)
+                .lastValueRetentionTime(Duration.ofDays(7))
+                .nullValueRetentionTime(Duration.ZERO)
+                .cleanupFrequency(EntityCleanupFrequency.NORMAL)
+                .build());
     }
 
     public List<OrgUnitDistance> publish(List<OrgUnitDistance> orgUnitDistances) {
@@ -46,8 +60,8 @@ public class OrgUnitDistanceProducerService {
 
     private void publish(OrgUnitDistance orgUnitDistance) {
         String key = orgUnitDistance.getId();
-        entityProducer.send(
-                EntityProducerRecord.<OrgUnitDistance>builder()
+        parameterizedTemplate.send(
+                ParameterizedProducerRecord.<OrgUnitDistance>builder()
                         .topicNameParameters(entityTopicNameParameters)
                         .key(key)
                         .value(orgUnitDistance)
