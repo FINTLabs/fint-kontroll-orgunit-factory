@@ -1,8 +1,8 @@
 package no.fintlabs.organisasjonselement;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fintlabs.cache.FintCache;
 import no.fintlabs.kafka.entity.EntityConsumerFactoryService;
 import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
@@ -39,8 +39,8 @@ public class OrganisasjonselementConsumerConfiguration {
 
 
     @Bean
-    ConcurrentMessageListenerContainer<String,OrganisasjonselementResource> organisasjonselementResourceConsumer(
-            FintCache<String,OrganisasjonselementResource> organisasjonselementResourceCache){
+    ConcurrentMessageListenerContainer<String, OrganisasjonselementResource> organisasjonselementResourceConsumer(
+            FintCache<String, OrganisasjonselementResource> organisasjonselementResourceCache){
         return createCacheConsumer(
                 "administrasjon.organisasjon.organisasjonselement",
                 OrganisasjonselementResource.class,
