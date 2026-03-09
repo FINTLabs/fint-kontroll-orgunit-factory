@@ -1,8 +1,8 @@
 package no.fintlabs.organisasjonselement;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fintlabs.cache.FintCache;
 import no.fintlabs.gyldighetsPeriode.GyldighetsperiodeService;
 import no.fintlabs.links.ResourceLinkUtil;
