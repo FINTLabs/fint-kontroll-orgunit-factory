@@ -1,7 +1,7 @@
 package no.fintlabs.gyldighetsperiode;
 
 import no.fintlabs.gyldighetsPeriode.GyldighetsperiodeService;
-import no.fint.model.felles.kompleksedatatyper.Periode;
+import no.novari.fint.model.felles.kompleksedatatyper.Periode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
