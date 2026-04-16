@@ -42,7 +42,7 @@ public class OrganisasjonselementConsumerConfiguration {
                 .groupIdApplicationDefault()
                 .maxPollRecordsKafkaDefault()
                 .maxPollIntervalKafkaDefault()
-                .seekToBeginningOnAssignment()
+                .continueFromPreviousOffsetOnAssignment()
                 .build();
 
         return parameterizedListenerContainerFactoryService.createRecordListenerContainerFactory(

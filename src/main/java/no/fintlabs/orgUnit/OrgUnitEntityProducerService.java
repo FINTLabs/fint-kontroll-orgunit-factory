@@ -42,7 +42,7 @@ public class OrgUnitEntityProducerService {
 
         entityTopicService.createOrModifyTopic(entityTopicNameParameters, EntityTopicConfiguration.stepBuilder()
                 .partitions(1)
-                .lastValueRetentionTime(Duration.ofDays(7))
+                .lastValueRetainedForever()
                 .nullValueRetentionTime(Duration.ofDays(7))
                 .cleanupFrequency(EntityCleanupFrequency.NORMAL)
                 .build()

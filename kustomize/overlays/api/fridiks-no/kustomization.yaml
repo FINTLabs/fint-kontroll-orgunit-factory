@@ -25,6 +25,9 @@ patches:
       - op: replace
         path: "/spec/env/2/value"
         value: "fridiks-no-fint-kontroll-orgunit-factory"
+      - op: replace
+        path: "/spec/env/5/value"
+        value: "fridiks-no"
     target:
       kind: Application
       name: fint-kontroll-orgunit-factory
