@@ -2,34 +2,51 @@ package no.fintlabs.orgUnit;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.cache.FintCache;
-import no.fintlabs.kafka.entity.EntityProducer;
-import no.fintlabs.kafka.entity.EntityProducerFactory;
-import no.fintlabs.kafka.entity.EntityProducerRecord;
-import no.fintlabs.kafka.entity.topic.EntityTopicNameParameters;
-import no.fintlabs.kafka.entity.topic.EntityTopicService;
+import no.novari.kafka.producing.ParameterizedProducerRecord;
+import no.novari.kafka.producing.ParameterizedTemplate;
+import no.novari.kafka.producing.ParameterizedTemplateFactory;
+import no.novari.kafka.topic.EntityTopicService;
+import no.novari.kafka.topic.configuration.EntityCleanupFrequency;
+import no.novari.kafka.topic.configuration.EntityTopicConfiguration;
+import no.novari.kafka.topic.name.EntityTopicNameParameters;
+import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
 @Slf4j
 public class OrgUnitEntityProducerService {
-    private final EntityProducer<OrgUnit> entityProducer;
+
+    private final ParameterizedTemplate<OrgUnit> parameterizedTemplate;
     private final EntityTopicNameParameters entityTopicNameParameters;
     private final FintCache<String,OrgUnit> publishedOrgUnitCache;
 
     public OrgUnitEntityProducerService(
-            EntityProducerFactory entityProducerFactory,
+            ParameterizedTemplateFactory parameterizedTemplateFactory,
             EntityTopicService entityTopicService,
-            FintCache<String, OrgUnit> publishedOrgUnitCache) {
-        entityProducer = entityProducerFactory.createProducer(OrgUnit.class);
+            FintCache<String, OrgUnit> publishedOrgUnitCache
+    ) {
+        this.parameterizedTemplate = parameterizedTemplateFactory.createTemplate(OrgUnit.class);
         this.publishedOrgUnitCache = publishedOrgUnitCache;
 
         entityTopicNameParameters =  EntityTopicNameParameters
                 .builder()
-                .resource("orgunit")
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .stepBuilder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault().build())
+                .resourceName("orgunit")
                 .build();
-        entityTopicService.ensureTopic(entityTopicNameParameters,0);
+
+        entityTopicService.createOrModifyTopic(entityTopicNameParameters, EntityTopicConfiguration.stepBuilder()
+                .partitions(1)
+                .lastValueRetainedForever()
+                .nullValueRetentionTime(Duration.ofDays(7))
+                .cleanupFrequency(EntityCleanupFrequency.NORMAL)
+                .build()
+        );
     }
 
 
@@ -49,8 +66,8 @@ public class OrgUnitEntityProducerService {
     public void publish(OrgUnit orgUnit){
       String key = orgUnit.getResourceId();
         log.info("Publishing to kafka: {}", orgUnit.getResourceId());
-      entityProducer.send(
-              EntityProducerRecord.<OrgUnit>builder()
+      parameterizedTemplate.send(
+              ParameterizedProducerRecord.<OrgUnit>builder()
                       .topicNameParameters(entityTopicNameParameters)
                       .key(key)
                       .value(orgUnit)

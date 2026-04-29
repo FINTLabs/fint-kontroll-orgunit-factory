@@ -18,6 +18,8 @@ spec:
       value: '50000'
     - name: fint.kontroll.orgunitdistance.publishing.fixed-delay
       value: '150000'
+    - name: novari.kafka.topic.org-id
+      value: 'orgid med -'
   kafka:
     enabled: true
     acls:

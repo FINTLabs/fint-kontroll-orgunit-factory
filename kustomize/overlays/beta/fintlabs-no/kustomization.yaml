@@ -22,6 +22,9 @@ patches:
       - op: replace
         path: "/spec/kafka/acls/1/topic"
         value: "fintlabs-no.kontroll.*"
+      - op: replace
+        path: "/spec/env/5/value"
+        value: "fintlabs-no"
     target:
       kind: Application
       name: fint-kontroll-orgunit-factory
